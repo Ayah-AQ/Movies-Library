@@ -36,6 +36,6 @@ app.use((err, req, res, next) => {
 
 
 // Start the server
-app.listen(8001,()=> 
+app.listen(8000,()=> 
 console.log(`The app-location runs on localhost:${PORT}`)
 );
