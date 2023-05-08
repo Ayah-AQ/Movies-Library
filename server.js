@@ -1,10 +1,28 @@
-const express = require('express');
-const app = express();
-const data= require('./Data/data.json')
-const PORT = 8000
+'use strict'
 
-// Home page endpoint
+const express = require('express');
+const axios = require('axios');
+const cors = require('cors');
+
+const data= require('./Data/data.json')
+require('dotenv').config();
+const apiKey = process.env.APIkey;
+
+
+const app = express();
+const PORT = 8000
+app.use(cors());
+
+
 app.get('/', moviesHandler);
+app.get('/trending', trendingHandler);
+app.get('/search', searchHandler);
+app.get('/search', genreHandler);
+app.get('/search', upComingMovieHandler);
+
+
+ 
+
 function moviesHandler(req,res){
     let result={};
     let newM = new Movie (data.title,data.poster_path,data.overview);
@@ -16,6 +34,71 @@ function Movie(title,poster_path,overview){
     this.poster_path=poster_path;
     this.overview=overview;
 }
+
+function Movie2(id,title,release_date,poster_path,overview){
+  this.id=id;
+  this.title=title;
+  this.release_date=release_date;
+  this.poster_path=poster_path;
+  this.overview=overview;
+}
+
+const TRENDING_URL = `https://api.themoviedb.org/3/trending/movie/week?api_key=${apiKey}`
+function trendingHandler (req,res){
+  axios.get(TRENDING_URL)
+  .then((result)=>{
+
+      let dataTrend = result.data.results.map((trending)=>{
+          return new Movie2(trending.id, trending.title,trending.release_date,trending.poster_path,trending.overview)
+      })
+      res.json(dataTrend);
+  })
+  .catch((err)=>{
+      console.log(err);
+  })
+
+} 
+
+
+async function searchHandler(req, res) {
+  const searchQuery = req.query.search;
+  const data=await axios.get(`https://api.themoviedb.org/3/search/company?api_key=${apiKey}&query=${searchQuery}`)
+  console.log(data.data)
+    res.status(200).json({
+      results:  data.data
+    })
+}
+
+
+function genreHandler (req,res){
+  let genreUrl = `https://api.themoviedb.org/3/genre/movie/list?api_key=${apiKey}&language=en-US`;
+  axios.get(genreUrl)
+  .then((result)=>{
+
+      res.json(result.data.genres);
+  })
+  .catch((err)=>{
+      console.log(err);
+  })
+
+} 
+
+function upComingMovieHandler (req,res){
+  let url = `https://api.themoviedb.org/3/movie/upcoming?api_key=${apiKey}&language=en-US&page=1`;
+  axios.get(url)
+  .then((result)=>{
+
+      let dataUpcomingMovie = result.data.results.map((result)=>{
+          return new Movie2(result.original_title,result.overview)
+      })
+
+      res.json(dataUpcomingMovie);
+  })
+  .catch((err)=>{
+      console.log(err);
+  })
+
+} 
 
 // Favorite page endpoint
 app.get('/fav', (req, res) => {
