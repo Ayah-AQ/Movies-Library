@@ -13,7 +13,7 @@ const app = express();
 const PORT = 8000
 app.use(cors());
 
-
+//Routes
 app.get('/', moviesHandler);
 app.get('/trending', trendingHandler);
 app.get('/search', searchHandler);
@@ -43,6 +43,7 @@ function Movie2(id,title,release_date,poster_path,overview){
   this.overview=overview;
 }
 
+//Trending
 const TRENDING_URL = `https://api.themoviedb.org/3/trending/movie/week?api_key=${apiKey}`
 function trendingHandler (req,res){
   axios.get(TRENDING_URL)
@@ -59,7 +60,7 @@ function trendingHandler (req,res){
 
 } 
 
-
+// Search
 async function searchHandler(req, res) {
   const searchQuery = req.query.search;
   const data=await axios.get(`https://api.themoviedb.org/3/search/company?api_key=${apiKey}&query=${searchQuery}`)
@@ -69,7 +70,7 @@ async function searchHandler(req, res) {
     })
 }
 
-
+// Genre
 function genreHandler (req,res){
   let genreUrl = `https://api.themoviedb.org/3/genre/movie/list?api_key=${apiKey}&language=en-US`;
   axios.get(genreUrl)
@@ -82,7 +83,7 @@ function genreHandler (req,res){
   })
 
 } 
-
+// Upcoming Movie
 function upComingMovieHandler (req,res){
   let url = `https://api.themoviedb.org/3/movie/upcoming?api_key=${apiKey}&language=en-US&page=1`;
   axios.get(url)
@@ -103,7 +104,6 @@ function upComingMovieHandler (req,res){
 // Favorite page endpoint
 app.get('/fav', (req, res) => {
   res.send('Welcome to Favorite Page');
-  // undefinedFunction()
 });
 
 // Error handling middleware for 404 errors
