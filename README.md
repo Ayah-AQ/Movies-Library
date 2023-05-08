@@ -8,7 +8,9 @@ setting up the server of the movie app and create the basic structures
 
 ## WRRC
 
-<img src='./Img/WRRC.png'>
+![Alt text](Img/WRRC.png)
+![Alt text](Img/API%20wrrc.png)
+
 ## Overview
 
 ## Getting Started
@@ -19,6 +21,7 @@ setting up the server of the movie app and create the basic structures
 - you can use browser on thunder client to send request
 
 ## Project Features
+
 - The app listens on port 8000.
 
 - The app has the following routes using the GET request:
@@ -26,3 +29,10 @@ setting up the server of the movie app and create the basic structures
 - The '/' Home page rout
 - The '/favorite' route
 - The app has an error handling route for status 500 and 404
+
+- # New
+
+- The '/trending' is trending movie rout
+- The '/search' is the search rout to use it go to following url: 'https://api.themoviedb.org/3/search/company?api_key=${apiKey}&query=${searchQuery}' // replace apiKey with yours and searchQuery with movie name.
+  - The '/genreHandler' is the genre rout to use it go to following url: 'h<https://api.themoviedb.org/3/genre/movie/list?api_key=${apiKey}&language=en-US>' // replace apiKey with yours
+- The '/upComingMovieHandler' is the upComingMovie rout to use it go to following url: 'https://api.themoviedb.org/3/movie/upcoming?api_key=${apiKey}&language=en-US&page=1' // replace apiKey with yours
