@@ -9,7 +9,7 @@ setting up the server of the movie app and create the basic structures
 ## WRRC
 
 ![Alt text](Img/WRRC.png)
-![Alt text](Img/API%20wrrc.png)
+![Alt text](Img/API%20wrrc.png )
 
 ## Overview
 
