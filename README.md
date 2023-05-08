@@ -2,14 +2,14 @@
 
 setting up the server of the movie app and create the basic structures
 
-# Project Name - Project Version
+# Project Name - Project Version 
 
 **Author Name**: Ayah AQ
 
 ## WRRC
 
 ![Alt text](Img/WRRC.png)
-![Alt text](Img/API%20wrrc.png)
+![Alt text](Img/API%20wrrc.png )
 
 ## Overview
 
