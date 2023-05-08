@@ -2,7 +2,7 @@
 
 setting up the server of the movie app and create the basic structures
 
-# Project Name - Project Version
+# Project Name - Project Version 
 
 **Author Name**: Ayah AQ
 
