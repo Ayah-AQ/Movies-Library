@@ -17,8 +17,8 @@ app.use(cors());
 app.get('/', moviesHandler);
 app.get('/trending', trendingHandler);
 app.get('/search', searchHandler);
-app.get('/search', genreHandler);
-app.get('/search', upComingMovieHandler);
+app.get('/genre', genreHandler);
+app.get('/upComing', upComingMovieHandler);
 
 
  
