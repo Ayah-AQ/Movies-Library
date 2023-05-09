@@ -3,23 +3,26 @@
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
-
+const pg = require('pg')
 const data= require('./Data/data.json')
 require('dotenv').config();
 const apiKey = process.env.APIkey;
-
+const db = process.env.DB
 
 const app = express();
 const PORT = 8000
 app.use(cors());
+app.use(express.json())
 
+const client= new pg.Client(db)
 //Routes
 app.get('/', moviesHandler);
 app.get('/trending', trendingHandler);
 app.get('/search', searchHandler);
 app.get('/genre', genreHandler);
 app.get('/upComing', upComingMovieHandler);
-
+app.post('/newMovie',addMovieHandler);
+app.get('/getMovie',getMoviesHandler)
 
  
 
@@ -106,6 +109,29 @@ app.get('/fav', (req, res) => {
   res.send('Welcome to Favorite Page');
 });
 
+
+function  getMoviesHandler (req,res){
+  let sql=`SELECT * FROM movie;`
+  client.query(sql).then((result)=>{
+      res.json(result.rows)
+  }
+
+  ).catch(err => (err,res,req))
+}
+
+function addMovieHandler(req,res){
+  let {name,comments} = req.body ;
+  let sql = `INSERT INTO movie (name,comments)
+  VALUES ($1,$2) RETURNING *;`
+  let values = [name,comments];
+  client.query(sql,values).then((result)=>{
+      res.status(201).json(result.rows)
+
+  }
+  ).catch() 
+}
+
+
 // Error handling middleware for 404 errors
 app.use((req, res, next) => {
   res.status(404).json({ status: 404, responseText: 'Page not found' });
@@ -119,6 +145,9 @@ app.use((err, req, res, next) => {
 
 
 // Start the server
-app.listen(8000,()=> 
-console.log(`The app-location runs on localhost:${PORT}`)
-);
+client.connect().then((con)=>{
+  console.log(con)
+  app.listen(8000,()=> 
+  console.log(`The app-location runs on localhost:${PORT}`)
+  );
+})
