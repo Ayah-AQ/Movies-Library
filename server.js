@@ -5,7 +5,10 @@ const axios = require('axios');
 const cors = require('cors');
 const pg = require('pg')
 const data= require('./Data/data.json')
+
 require('dotenv').config();
+const client= new pg.Client(db)
+
 const apiKey = process.env.APIkey;
 const db = process.env.DB
 
@@ -14,7 +17,7 @@ const PORT = 8000
 app.use(cors());
 app.use(express.json())
 
-const client= new pg.Client(db)
+
 //Routes
 app.get('/', moviesHandler);
 app.get('/trending', trendingHandler);
@@ -25,7 +28,7 @@ app.post('/add',addMovieHandler);
 app.get('/list',getMoviesHandler)
 
  
-
+//movie list from data file
 function moviesHandler(req,res){
     let result={};
     let newM = new Movie (data.title,data.poster_path,data.overview);
@@ -38,42 +41,35 @@ function Movie(title,poster_path,overview){
     this.overview=overview;
 }
 
-function Movie2(id,title,release_date,poster_path,overview){
-  this.id=id;
-  this.title=title;
-  this.release_date=release_date;
-  this.poster_path=poster_path;
-  this.overview=overview;
-}
 
-//Trending
+//Trending from api
 const TRENDING_URL = `https://api.themoviedb.org/3/trending/movie/week?api_key=${apiKey}`
 function trendingHandler (req,res){
   axios.get(TRENDING_URL)
   .then((result)=>{
-
-      let dataTrend = result.data.results.map((trending)=>{
-          return new Movie2(trending.id, trending.title,trending.release_date,trending.poster_path,trending.overview)
-      })
-      res.json(dataTrend);
+    
+    let dataTrend = result.data.results.map((trending)=>{
+      return new Movie2(trending.id, trending.title,trending.release_date,trending.poster_path,trending.overview)
+    })
+    res.json(dataTrend);
   })
   .catch((err)=>{
-      console.log(err);
+    console.log(err);
   })
-
+  
 } 
 
-// Search
+// Search from api
 async function searchHandler(req, res) {
   const searchQuery = req.query.search;
   const data=await axios.get(`https://api.themoviedb.org/3/search/company?api_key=${apiKey}&query=${searchQuery}`)
   console.log(data.data)
-    res.status(200).json({
-      results:  data.data
-    })
+  res.status(200).json({
+    results:  data.data
+  })
 }
 
-// Genre
+// Genre from api
 function genreHandler (req,res){
   let genreUrl = `https://api.themoviedb.org/3/genre/movie/list?api_key=${apiKey}&language=en-US`;
   axios.get(genreUrl)
@@ -83,33 +79,40 @@ function genreHandler (req,res){
   })
   .catch((err)=>{
       console.log(err);
-  })
-
-} 
-// Upcoming Movie
-function upComingMovieHandler (req,res){
-  let url = `https://api.themoviedb.org/3/movie/upcoming?api_key=${apiKey}&language=en-US&page=1`;
-  axios.get(url)
-  .then((result)=>{
-
+    })
+    
+  } 
+  // Upcoming Movie from api
+  function upComingMovieHandler (req,res){
+    let url = `https://api.themoviedb.org/3/movie/upcoming?api_key=${apiKey}&language=en-US&page=1`;
+    axios.get(url)
+    .then((result)=>{
+      
       let dataUpcomingMovie = result.data.results.map((result)=>{
-          return new Movie2(result.original_title,result.overview)
+        return new Movie2(result.original_title,result.overview)
       })
-
+      
       res.json(dataUpcomingMovie);
-  })
-  .catch((err)=>{
+    })
+    .catch((err)=>{
       console.log(err);
-  })
-
-} 
-
+    })
+    
+  } 
+  
+  function Movie2(id,title,release_date,poster_path,overview){
+  this.id=id;
+  this.title=title;
+    this.release_date=release_date;
+    this.poster_path=poster_path;
+    this.overview=overview;
+  }
 // Favorite page endpoint
 app.get('/fav', (req, res) => {
   res.send('Welcome to Favorite Page');
 });
 
-
+// DB list of data
 function  getMoviesHandler (req,res){
   let sql=`SELECT * FROM movie;`
   client.query(sql).then((result)=>{
@@ -118,7 +121,7 @@ function  getMoviesHandler (req,res){
 
   ).catch(err => (err,res,req))
 }
-
+// DB add data
 function addMovieHandler(req,res){
   let {name,comments} = req.body ;
   let sql = `INSERT INTO movie (name,comments)
