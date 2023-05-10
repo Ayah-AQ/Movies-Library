@@ -21,8 +21,8 @@ app.get('/trending', trendingHandler);
 app.get('/search', searchHandler);
 app.get('/genre', genreHandler);
 app.get('/upComing', upComingMovieHandler);
-app.post('/newMovie',addMovieHandler);
-app.get('/getMovie',getMoviesHandler)
+app.post('/add',addMovieHandler);
+app.get('/list',getMoviesHandler)
 
  
 
