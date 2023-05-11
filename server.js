@@ -7,10 +7,11 @@ const pg = require('pg')
 const data= require('./Data/data.json')
 
 require('dotenv').config();
-const client= new pg.Client(db)
 
 const apiKey = process.env.APIkey;
 const db = process.env.DB
+
+const client= new pg.Client(db)
 
 const app = express();
 const PORT = 8000
@@ -116,7 +117,12 @@ app.get('/fav', (req, res) => {
 function  getMoviesHandler (req,res){
   let sql=`SELECT * FROM movie;`
   client.query(sql).then((result)=>{
-      res.json(result.rows)
+      res.json(
+       { 
+        count: result.rowCount,
+        data:result.rows
+      }
+        )
   }
 
   ).catch(err => (err,res,req))
