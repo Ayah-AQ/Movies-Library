@@ -7,10 +7,11 @@ const pg = require('pg')
 const data= require('./Data/data.json')
 
 require('dotenv').config();
-const client= new pg.Client(db)
 
 const apiKey = process.env.APIkey;
 const db = process.env.DB
+
+const client= new pg.Client(db)
 
 const app = express();
 const PORT = 8000
