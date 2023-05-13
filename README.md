@@ -17,6 +17,9 @@ setting up the server of the movie app and create the basic structures
 - 3
 
 ![Alt text](Img/DB%20WRRC.png)
+
+
+*** we still working with database so there is no new WRRC ***
 ## Overview
 
 ## Getting Started
@@ -46,3 +49,8 @@ setting up the server of the movie app and create the basic structures
 - # New - 2
 - The '/newMovie' allows u to add the movie to the list using post
 -  The '/getMovie' allows u to see the movies u have in DB list
+
+- # New - 3
+- now u can update list going to path '/update/movieId'
+- now u can delete list going to path '/del/movieId'
+- now u can see specific movie from the list going to path '/getMovie/movieId'
