@@ -170,12 +170,11 @@ function updateHandler(req,res){
 function deleteHandler(req,res){
   const id = req.params.id;
   const sql = `DELETE FROM movies WHERE id = ${id}`;
-  client.query(sql).then(() => {
-    return res.status(204).json({
-      code: 204,
-      message: `Row deleted successfully with id: ${id}`
-    })
-  }).catch()
+  client.query(sql).then((data)=>{
+    res.status(202).json({ status: 202, responseText: 'Deleted' })
+  }).catch((error)=>{
+    errorHandler(error,req,res)
+  })
 }
 // Error handling middleware for 404 errors
 app.use((req, res, next) => {
