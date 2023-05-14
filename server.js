@@ -27,6 +27,10 @@ app.get('/genre', genreHandler);
 app.get('/upComing', upComingMovieHandler);
 app.post('/add',addMovieHandler);
 app.get('/list',getMoviesHandler)
+app.get('/getMovie/:id',getHandler)
+app.put('/update/:id',updateHandler)
+app.delete('/del/:id',deleteHandler)
+
 
  
 //movie list from data file
@@ -115,9 +119,15 @@ app.get('/fav', (req, res) => {
 
 // DB list of data
 function  getMoviesHandler (req,res){
-  let sql=`SELECT * FROM movie;`
+
+  let sql=`SELECT * FROM movies;`
   client.query(sql).then((result)=>{
-      res.json(result.rows)
+      res.json(
+       { 
+        count: result.rowCount,
+        data:result.rows
+      }
+        )
   }
 
   ).catch(err => (err,res,req))
@@ -125,7 +135,7 @@ function  getMoviesHandler (req,res){
 // DB add data
 function addMovieHandler(req,res){
   let {name,comments} = req.body ;
-  let sql = `INSERT INTO movie (name,comments)
+  let sql = `INSERT INTO movies (name,comments)
   VALUES ($1,$2) RETURNING *;`
   let values = [name,comments];
   client.query(sql,values).then((result)=>{
@@ -135,7 +145,37 @@ function addMovieHandler(req,res){
   ).catch() 
 }
 
+function  getHandler (req,res){
+  let id = req.params.id 
+  let sql=`SELECT * FROM movies WHERE id = $1;`
+  let values = [id];
+  client.query(sql,values).then((result)=>{
+      res.json(result.rows)
+  }
 
+  ).catch()
+}   
+
+function updateHandler(req,res){
+  const id = req.params.id;
+  const newData = req.body;
+  const sql = `UPDATE movies SET name = $1, comments = $2 where id = $3 returning *`;
+  const updatedValue = [newData.name, newData.comments, id];
+  client.query(sql, updatedValue).then(data =>
+    res.status(202).json(data.rows)
+  )
+
+}
+
+function deleteHandler(req,res){
+  const id = req.params.id;
+  const sql = `DELETE FROM movies WHERE id = ${id}`;
+  client.query(sql).then((data)=>{
+    res.status(202).json({ status: 202, responseText: 'Deleted' })
+  }).catch((error)=>{
+    errorHandler(error,req,res)
+  })
+}
 // Error handling middleware for 404 errors
 app.use((req, res, next) => {
   res.status(404).json({ status: 404, responseText: 'Page not found' });
