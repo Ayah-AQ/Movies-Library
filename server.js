@@ -1,6 +1,5 @@
 'use strict'
 
-
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
@@ -121,7 +120,7 @@ app.get('/fav', (req, res) => {
 // DB list of data
 function  getMoviesHandler (req,res){
 
-  let sql=`SELECT * FROM movies;`
+  let sql=`SELECT * FROM moviess;`
   client.query(sql).then((result)=>{
       res.json(
        { 
@@ -135,10 +134,10 @@ function  getMoviesHandler (req,res){
 }
 // DB add data
 function addMovieHandler(req,res){
-  let {name,comments} = req.body ;
-  let sql = `INSERT INTO movies (name,comments)
+  let {title,comments} = req.body ;
+  let sql = `INSERT INTO moviess (title,comments)
   VALUES ($1,$2) RETURNING *;`
-  let values = [name,comments];
+  let values = [title,comments];
   client.query(sql,values).then((result)=>{
       res.status(201).json(result.rows)
 
@@ -148,7 +147,7 @@ function addMovieHandler(req,res){
 
 function  getHandler (req,res){
   let id = req.params.id 
-  let sql=`SELECT * FROM movies WHERE id = $1;`
+  let sql=`SELECT * FROM moviess WHERE id = $1;`
   let values = [id];
   client.query(sql,values).then((result)=>{
       res.json(result.rows)
@@ -160,7 +159,7 @@ function  getHandler (req,res){
 function updateHandler(req,res){
   const id = req.params.id;
   const newData = req.body;
-  const sql = `UPDATE movies SET name = $1, comments = $2 where id = $3 returning *`;
+  const sql = `UPDATE moviess SET name = $1, comments = $2 where id = $3 returning *`;
   const updatedValue = [newData.name, newData.comments, id];
   client.query(sql, updatedValue).then(data =>
     res.status(202).json(data.rows)
@@ -170,7 +169,7 @@ function updateHandler(req,res){
 
 function deleteHandler(req,res){
   const id = req.params.id;
-  const sql = `DELETE FROM movies WHERE id = ${id}`;
+  const sql = `DELETE FROM moviess WHERE id = ${id}`;
   client.query(sql).then((data)=>{
     res.status(202).json({ status: 202, responseText: 'Deleted' })
   }).catch((error)=>{
