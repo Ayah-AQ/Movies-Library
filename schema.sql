@@ -1,6 +1,6 @@
-	CREATE TABLE movies (
+	CREATE TABLE moviess (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255),
+    title VARCHAR(255),
     comments VARCHAR(255)
     
 );
