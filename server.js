@@ -132,10 +132,9 @@ function  getMoviesHandler (req,res){
 
 // DB add data
 function addMovieHandler(req,res){
-  let {title,comments,overview,poster_path} = req.body ;
-  let sql = `INSERT INTO movies_db (title,comments,overview,poster_path)
-  VALUES ($1,$2,$3,$4) RETURNING *;`
-  let values = [title,comments,overview,poster_path ];
+  let addM = req.body ;
+  let sql = `INSERT INTO movies_db (title, comments, overview, poster_path) VALUES ($1,$2,$3,$4) RETURNING *;`
+  let values = [addM.title, addM.comments, addM.overview, addM.poster_path ];
   client.query(sql,values).then((result)=>{
       res.status(201).json(result.rows)
 
