@@ -120,24 +120,22 @@ app.get('/fav', (req, res) => {
 // DB list of data
 function  getMoviesHandler (req,res){
 
-  let sql=`SELECT * FROM moviess;`
-  client.query(sql).then((result)=>{
-      res.json(
-       { 
-        count: result.rowCount,
-        data:result.rows
-      }
-        )
-  }
+  let sql=`SELECT * FROM movies_db;`
+  client.query(sql)
+  .then((result)=>{
+    res.json(result.rows);
+    })
+    .catch((err)=>{
+      console.log(err);
+      })
+      } 
 
-  ).catch(err => (err,res,req))
-}
 // DB add data
 function addMovieHandler(req,res){
-  let {title,comments} = req.body ;
-  let sql = `INSERT INTO moviess (title,comments)
-  VALUES ($1,$2) RETURNING *;`
-  let values = [title,comments];
+  let {title,comments,overview,poster_path} = req.body ;
+  let sql = `INSERT INTO movies_db (title,comments,overview,poster_path)
+  VALUES ($1,$2,$3,$4) RETURNING *;`
+  let values = [title,comments,overview,poster_path ];
   client.query(sql,values).then((result)=>{
       res.status(201).json(result.rows)
 
@@ -147,7 +145,7 @@ function addMovieHandler(req,res){
 
 function  getHandler (req,res){
   let id = req.params.id 
-  let sql=`SELECT * FROM moviess WHERE id = $1;`
+  let sql=`SELECT * FROM movies_db WHERE id = $1;`
   let values = [id];
   client.query(sql,values).then((result)=>{
       res.json(result.rows)
@@ -157,20 +155,22 @@ function  getHandler (req,res){
 }   
 
 function updateHandler(req,res){
+
   const id = req.params.id;
   const newData = req.body;
-  const sql = `UPDATE moviess SET name = $1, comments = $2 where id = $3 returning *`;
-  const updatedValue = [newData.name, newData.comments, id];
+  const sql = `UPDATE movies_db SET title=$1, poster_path=$2, overview=$3, comments=$4 where id=${id} returning *`;
+  const updatedValue = [newData.title ,newData.poster_path ,newData.overview, newData.comments];
   client.query(sql, updatedValue).then(data =>
     res.status(202).json(data.rows)
   )
 
 }
 
+
 function deleteHandler(req,res){
   const id = req.params.id;
-  const sql = `DELETE FROM moviess WHERE id = ${id}`;
-  client.query(sql).then((data)=>{
+  const sql = `DELETE FROM movies_db WHERE id = ${id}`;
+  client.query(sql).then(()=>{
     res.status(202).json({ status: 202, responseText: 'Deleted' })
   }).catch((error)=>{
     errorHandler(error,req,res)
