@@ -162,7 +162,7 @@ function updateHandler(req,res){
   client.query(sql, updatedValue).then(data =>
     res.status(202).json(data.rows)
   )
-
+  .catch()
 }
 
 
