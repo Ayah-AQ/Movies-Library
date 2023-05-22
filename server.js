@@ -120,6 +120,7 @@ app.get('/fav', (req, res) => {
 // DB list of data
 function  getMoviesHandler (req,res){
 
+
   let sql=`SELECT * FROM movies_db;`
   client.query(sql)
   .then((result)=>{
@@ -132,10 +133,12 @@ function  getMoviesHandler (req,res){
 
 // DB add data
 function addMovieHandler(req,res){
+
   let {title,comments,overview,poster_path} = req.body ;
   let sql = `INSERT INTO movies_db (title,comments,overview,poster_path)
   VALUES ($1,$2,$3,$4) RETURNING *;`
   let values = [title,comments,overview,poster_path ];
+
   client.query(sql,values).then((result)=>{
       res.status(201).json(result.rows)
 
@@ -145,7 +148,9 @@ function addMovieHandler(req,res){
 
 function  getHandler (req,res){
   let id = req.params.id 
+
   let sql=`SELECT * FROM movies_db WHERE id = $1;`
+
   let values = [id];
   client.query(sql,values).then((result)=>{
       res.json(result.rows)
@@ -158,8 +163,10 @@ function updateHandler(req,res){
 
   const id = req.params.id;
   const newData = req.body;
+
   const sql = `UPDATE movies_db SET title=$1, poster_path=$2, overview=$3, comments=$4 where id=${id} returning *`;
   const updatedValue = [newData.title ,newData.poster_path ,newData.overview, newData.comments];
+
   client.query(sql, updatedValue).then(data =>
     res.status(202).json(data.rows)
   )
@@ -169,8 +176,10 @@ function updateHandler(req,res){
 
 function deleteHandler(req,res){
   const id = req.params.id;
+
   const sql = `DELETE FROM movies_db WHERE id = ${id}`;
   client.query(sql).then(()=>{
+
     res.status(202).json({ status: 202, responseText: 'Deleted' })
   }).catch((error)=>{
     errorHandler(error,req,res)
