@@ -157,8 +157,8 @@ function updateHandler(req,res){
 
   const id = req.params.id;
   const newData = req.body;
-  const sql = `UPDATE movies_db SET title=$1, poster_path=$2, overview=$3, comments=$4 where id=${id} returning *`;
-  const updatedValue = [newData.title ,newData.poster_path ,newData.overview, newData.comments];
+  const sql = `UPDATE movies_db SET comments=$1 where id=${id} returning *`;
+  const updatedValue = [newData.comments];
   client.query(sql, updatedValue).then(data =>
     res.status(202).json(data.rows)
   )
